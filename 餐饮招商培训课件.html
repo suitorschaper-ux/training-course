@@ -1,0 +1,2097 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --ink: #1a1008;
+    --red: #c0311a;
+    --red-light: #e8472e;
+    --gold: #c8922a;
+    --gold-light: #f0b84a;
+    --cream: #faf6ee;
+    --cream-dark: #f0e8d8;
+    --gray: #8a7d6e;
+    --gray-light: #d4c8b8;
+    --white: #ffffff;
+    --card-bg: #fffdf8;
+    --shadow: 0 4px 24px rgba(26,16,8,0.10);
+    --shadow-lg: 0 8px 40px rgba(26,16,8,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─────────────────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(26,16,8,0.96);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 56px;
+    border-bottom: 1px solid rgba(200,146,42,0.3);
+  }
+
+  .nav-logo {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 3px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--gold-light);
+    background: rgba(200,146,42,0.15);
+  }
+
+  .nav-links .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  /* ─── HERO ────────────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+    padding-top: 56px;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(192,49,26,0.2);
+    border: 1px solid rgba(192,49,26,0.5);
+    color: var(--red-light);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+    width: fit-content;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--red-light);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(42px, 5vw, 64px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+
+  .hero-title span {
+    color: var(--gold-light);
+  }
+
+  .hero-subtitle {
+    font-size: 19px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 48px;
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: rgba(255,255,255,0.5);
+    max-width: 380px;
+    line-height: 1.9;
+    margin-bottom: 48px;
+    border-left: 2px solid var(--red);
+    padding-left: 18px;
+  }
+
+  .hero-audience {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .audience-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .audience-tag:hover {
+    background: rgba(200,146,42,0.15);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px 80px 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .toc-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--gray);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(192,49,26,0.15), transparent);
+    transition: width 0.3s;
+  }
+
+  .toc-item:hover::before { width: 100%; }
+
+  .toc-item:hover {
+    border-color: rgba(192,49,26,0.3);
+  }
+
+  .toc-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--red);
+    min-width: 36px;
+    line-height: 1;
+  }
+
+  .toc-text {
+    flex: 1;
+  }
+
+  .toc-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
+  }
+
+  .toc-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .toc-arrow {
+    font-size: 15px;
+    color: rgba(255,255,255,0.2);
+    transition: all 0.2s;
+  }
+
+  .toc-item:hover .toc-arrow {
+    color: var(--red-light);
+    transform: translateX(4px);
+  }
+
+  /* BG decorations */
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-bg-c1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,49,26,0.12) 0%, transparent 70%);
+    top: -100px; right: 100px;
+    animation: float1 8s ease-in-out infinite;
+  }
+
+  .hero-bg-c2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(200,146,42,0.10) 0%, transparent 70%);
+    bottom: 50px; left: 200px;
+    animation: float2 10s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(15px) scale(0.95); }
+  }
+
+  .divider-line {
+    position: absolute;
+    left: 50%; top: 15%; bottom: 15%;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(200,146,42,0.3), transparent);
+  }
+
+  /* ─── SECTION BASE ───────────────────────────────────────── */
+  .section {
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .section:nth-child(odd) { background: var(--cream); }
+  .section:nth-child(even) { background: var(--cream-dark); }
+
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .section-header {
+    margin-bottom: 60px;
+  }
+
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .eyebrow-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--white);
+    background: var(--red);
+    width: 28px; height: 28px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0;
+    flex-shrink: 0;
+  }
+
+  .eyebrow-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 14px;
+  }
+
+  .section-title em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .section-lead {
+    font-size: 18px;
+    color: var(--gray);
+    max-width: 600px;
+    line-height: 1.8;
+  }
+
+  /* ─── CORE INSIGHT BOX ───────────────────────────────────── */
+  .insight-box {
+    background: var(--ink);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin: 0 0 48px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .insight-box::before {
+    content: '"';
+    position: absolute;
+    right: 24px; top: -10px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 120px;
+    color: rgba(192,49,26,0.15);
+    line-height: 1;
+    font-weight: 900;
+  }
+
+  .insight-box p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.9;
+    max-width: 800px;
+  }
+
+  .insight-box strong {
+    color: var(--gold-light);
+  }
+
+  /* ─── CARDS ──────────────────────────────────────────────── */
+  .card-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 4px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(26,16,8,0.06);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(192,49,26,0.2);
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gray-light);
+    transition: background 0.3s;
+  }
+
+  .card:hover::after { background: var(--red); }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .card-body {
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.85;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--red);
+    background: rgba(192,49,26,0.08);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  /* ─── SECTION 1: 外部调研 ─────────────────────────────────── */
+  .research-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--gray-light);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .research-col {
+    background: var(--card-bg);
+    padding: 36px 30px;
+    position: relative;
+  }
+
+  .research-col-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .research-icon-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .research-col-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .research-col-sub {
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+
+  .research-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .research-items li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .research-items li::before {
+    content: '—';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .output-banner {
+    background: linear-gradient(135deg, var(--ink) 0%, #2a1a0a 100%);
+    border-radius: 4px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .output-banner-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .output-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .output-tag {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 5px 14px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── SECTION 2: 内部复盘 ─────────────────────────────────── */
+  .review-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .table-wrapper {
+    background: var(--card-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(26,16,8,0.06);
+  }
+
+  .table-header-bar {
+    background: var(--ink);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-header-bar span {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .table-header-bar .badge {
+    font-size: 13px;
+    background: var(--red);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+
+  thead th {
+    background: rgba(26,16,8,0.04);
+    color: var(--gray);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--cream-dark);
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--cream-dark);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(200,146,42,0.05); }
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody td {
+    padding: 12px 16px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  .cat-badge {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .status-good { background: rgba(52,168,83,0.1); color: #2d9348; }
+  .status-bad { background: rgba(192,49,26,0.1); color: var(--red); }
+  .status-need { background: rgba(200,146,42,0.1); color: var(--gold); }
+  .status-empty { background: rgba(138,125,110,0.1); color: var(--gray); }
+
+  .question-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .q-card {
+    background: var(--card-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(26,16,8,0.06);
+  }
+
+  .q-card-head {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .q-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0.15;
+  }
+
+  .q-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .q-body {
+    padding: 0 24px 20px 24px;
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.85;
+  }
+
+  .q-highlight {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(192,49,26,0.05);
+    border-left: 3px solid var(--red);
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.7;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ─── RATIO VISUAL ───────────────────────────────────────── */
+  .ratio-visual {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid rgba(26,16,8,0.06);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .ratio-box {
+    text-align: center;
+    padding: 16px 24px;
+    border-radius: 4px;
+  }
+
+  .ratio-box.primary {
+    background: var(--red);
+    color: white;
+  }
+
+  .ratio-box.secondary {
+    background: rgba(192,49,26,0.08);
+    color: var(--red);
+    border: 1px dashed rgba(192,49,26,0.3);
+  }
+
+  .ratio-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+    display: block;
+  }
+
+  .ratio-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+    opacity: 0.75;
+  }
+
+  .ratio-colon {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gray-light);
+  }
+
+  .ratio-desc {
+    flex: 1;
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.7;
+    margin-left: 8px;
+  }
+
+  /* ─── SECTION 3: 招商策略 ─────────────────────────────────── */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    background: var(--gray-light);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .strat-cell {
+    background: var(--card-bg);
+    padding: 32px 28px;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .strat-cell:hover {
+    background: #fffbf4;
+  }
+
+  .strat-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: rgba(192,49,26,0.08);
+    line-height: 1;
+    position: absolute;
+    right: 20px; top: 16px;
+  }
+
+  .strat-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .strat-title-icon {
+    font-size: 20px;
+  }
+
+  .strat-body {
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.85;
+  }
+
+  .strat-body strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* 撬动案例 */
+  .leverage-case {
+    background: var(--ink);
+    border-radius: 4px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .lc-left {}
+
+  .lc-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .lc-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+
+  .lc-body {
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+  }
+
+  .lc-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .lc-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+
+  .lc-step:hover {
+    background: rgba(192,49,26,0.1);
+    border-color: rgba(192,49,26,0.3);
+  }
+
+  .lc-step-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .lc-step-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  .lc-step-desc {
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.6;
+  }
+
+  /* ─── SECTION 4: 招商计划 ─────────────────────────────────── */
+  .pipeline {
+    display: flex;
+    gap: 3px;
+    background: var(--gray-light);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .pipe-stage {
+    flex: 1;
+    background: var(--card-bg);
+    padding: 24px 20px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+    position: relative;
+  }
+
+  .pipe-stage:hover {
+    background: var(--ink);
+  }
+
+  .pipe-stage:hover .pipe-name { color: white; }
+  .pipe-stage:hover .pipe-desc { color: rgba(255,255,255,0.5); }
+  .pipe-stage:hover .pipe-num-wrap { background: var(--red); color: white; }
+
+  .pipe-num-wrap {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(192,49,26,0.1);
+    color: var(--red);
+    font-size: 17px;
+    font-weight: 700;
+    font-family: 'Noto Serif SC', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    transition: all 0.2s;
+  }
+
+  .pipe-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+
+  .pipe-desc {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.6;
+    transition: color 0.2s;
+  }
+
+  /* 示例计划表 */
+  .plan-table-wrap {
+    background: var(--card-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(26,16,8,0.06);
+  }
+
+  .plan-table-head {
+    background: var(--ink);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .plan-table-head span {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .plan-table-head .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .plan-table-head .live-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #34a853;
+    animation: pulse 2s infinite;
+  }
+
+  .plan-table table { width: 100%; border-collapse: collapse; font-size: 16px; }
+
+  .plan-table thead th {
+    background: rgba(26,16,8,0.04);
+    color: var(--gray);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 11px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--cream-dark);
+    text-transform: uppercase;
+  }
+
+  .plan-table tbody tr { border-bottom: 1px solid var(--cream-dark); }
+  .plan-table tbody tr:last-child { border-bottom: none; }
+  .plan-table tbody tr:hover { background: rgba(200,146,42,0.04); }
+
+  .plan-table tbody td {
+    padding: 13px 16px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  .stage-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .dot-pending { background: rgba(138,125,110,0.1); color: var(--gray); }
+  .dot-progress { background: rgba(200,146,42,0.12); color: var(--gold); }
+  .dot-intent { background: rgba(66,133,244,0.12); color: #4285f4; }
+  .dot-sign { background: rgba(52,168,83,0.12); color: #2d9348; }
+
+  .timeline-note {
+    padding: 16px 28px;
+    background: rgba(192,49,26,0.04);
+    border-top: 1px solid rgba(192,49,26,0.1);
+    font-size: 15px;
+    color: var(--red);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ─── SECTION 5: 保障措施 ─────────────────────────────────── */
+  .guarantee-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .g-card {
+    background: var(--card-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(26,16,8,0.06);
+    transition: all 0.3s;
+  }
+
+  .g-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .g-card-head {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .g-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .g-card-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .g-card-subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .g-card-body {
+    padding: 0 24px 24px;
+  }
+
+  .g-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .g-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .g-list li::before {
+    content: '▸';
+    color: var(--red);
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .warning-box {
+    background: rgba(192,49,26,0.06);
+    border: 1px solid rgba(192,49,26,0.2);
+    border-radius: 4px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  .warning-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+
+  .warning-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+
+  .warning-body {
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.85;
+  }
+
+  .warning-body strong { color: var(--ink); font-weight: 600; }
+
+  /* ─── CLOSING ─────────────────────────────────────────────── */
+  #closing {
+    background: var(--ink);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #closing::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(192,49,26,0.15) 0%, transparent 65%);
+  }
+
+  .closing-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .closing-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .closing-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+  }
+
+  .closing-title em {
+    font-style: normal;
+    color: var(--gold-light);
+  }
+
+  .closing-body {
+    font-size: 18px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.9;
+    margin-bottom: 48px;
+  }
+
+  .closing-steps {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .cs-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+
+  .cs-item:hover {
+    color: var(--gold-light);
+    background: rgba(200,146,42,0.1);
+    border-color: rgba(200,146,42,0.3);
+  }
+
+  .cs-sep {
+    color: var(--red);
+    font-weight: 700;
+    align-self: center;
+    font-size: 17px;
+  }
+
+  /* ─── SCROLL ANIMATIONS ──────────────────────────────────── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-up:nth-child(1) { transition-delay: 0s; }
+  .fade-up:nth-child(2) { transition-delay: 0.08s; }
+  .fade-up:nth-child(3) { transition-delay: 0.16s; }
+  .fade-up:nth-child(4) { transition-delay: 0.24s; }
+  .fade-up:nth-child(5) { transition-delay: 0.32s; }
+  .fade-up:nth-child(6) { transition-delay: 0.40s; }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 56px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    z-index: 99;
+    transition: width 0.1s;
+  }
+
+  /* Section marker */
+  .section-marker {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .sm-line {
+    flex: 1;
+    height: 1px;
+    background: var(--gray-light);
+  }
+
+  .sm-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--gray-light);
+    text-transform: uppercase;
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 30px; }
+    .container { padding: 0 24px; }
+    .card-grid-3, .research-grid { grid-template-columns: 1fr; }
+    .card-grid-2, .review-layout, .strategy-grid, .leverage-case, .guarantee-grid { grid-template-columns: 1fr; }
+    .pipeline { flex-wrap: wrap; }
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .section { padding: 70px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">餐饮招商</div>
+  <ul class="nav-links">
+    <li><a href="#s1"><span class="num">01</span> 外部调研</a></li>
+    <li><a href="#s2"><span class="num">02</span> 内部复盘</a></li>
+    <li><a href="#s3"><span class="num">03</span> 招商策略</a></li>
+    <li><a href="#s4"><span class="num">04</span> 招商计划</a></li>
+    <li><a href="#s5"><span class="num">05</span> 保障措施</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circle hero-bg-c1"></div>
+  <div class="hero-bg-circle hero-bg-c2"></div>
+  <div class="divider-line"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">内部培训课件</div>
+    <h1 class="hero-title">餐饮招商<br><span>全流程</span><br>实战手册</h1>
+    <p class="hero-subtitle">系统方法论 · 落地执行框架</p>
+    <p class="hero-desc">
+      招商不是「补铺」，而是一套<strong style="color:rgba(255,255,255,0.8)">有逻辑、有数据、有策略</strong>的完整作战体系。从外部调研到落地保障，每一步都必须有理有据，像筹备店一样去干。
+    </p>
+    <div class="hero-audience">
+      <span class="audience-tag">店总</span>
+      <span class="audience-tag">总助</span>
+      <span class="audience-tag">招商人员</span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <p class="toc-label">课程导航</p>
+    <ul class="toc-list">
+      <li><a class="toc-item" href="#s1">
+        <span class="toc-num">01</span>
+        <span class="toc-text">
+          <span class="toc-title">餐饮外部调研</span>
+          <span class="toc-desc">上级 · 周边 · 本地 — 品牌/销售/租费三维数据</span>
+        </span>
+        <span class="toc-arrow">→</span>
+      </a></li>
+      <li><a class="toc-item" href="#s2">
+        <span class="toc-num">02</span>
+        <span class="toc-text">
+          <span class="toc-title">内部复盘</span>
+          <span class="toc-desc">品类完整性评估 · 良性判断 · 1:3目标品牌</span>
+        </span>
+        <span class="toc-arrow">→</span>
+      </a></li>
+      <li><a class="toc-item" href="#s3">
+        <span class="toc-num">03</span>
+        <span class="toc-text">
+          <span class="toc-title">招商策略</span>
+          <span class="toc-desc">核心品牌撬动逻辑 · 1+2/1+3矩阵打法</span>
+        </span>
+        <span class="toc-arrow">→</span>
+      </a></li>
+      <li><a class="toc-item" href="#s4">
+        <span class="toc-num">04</span>
+        <span class="toc-text">
+          <span class="toc-title">招商计划</span>
+          <span class="toc-desc">六节点追踪表 · 责任到人 · 时间到周</span>
+        </span>
+        <span class="toc-arrow">→</span>
+      </a></li>
+      <li><a class="toc-item" href="#s5">
+        <span class="toc-num">05</span>
+        <span class="toc-text">
+          <span class="toc-title">保障措施</span>
+          <span class="toc-desc">月度专项会 · 日会 · 激励 · 节点考核</span>
+        </span>
+        <span class="toc-arrow">→</span>
+      </a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── S1: 外部调研 ─────────────────────────────────────── -->
+<section class="section" id="s1">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="eyebrow-num">01</span>
+        <span class="eyebrow-label">第一步 · 数据先行</span>
+      </div>
+      <h2 class="section-title">餐饮<em>外部调研</em></h2>
+      <p class="section-lead">你凭什么说要招这个品牌？他的业绩做多少？——所有招商决策必须来自真实的市场数据，而不是拍脑袋。</p>
+    </div>
+
+    <div class="insight-box fade-up">
+      <p>
+        <strong>核心原则：</strong>没有调研，就没有计划；没有计划，方向就是错的。你说我要招这个品牌，你凭什么招他？他为什么值得你去招？
+        他是从市场调研出来的——<strong>业绩还 OK，经营能力强，线上运营能力强</strong>，所以他才会成为你的目标品牌，这才是有依据的招商。
+      </p>
+    </div>
+
+    <div class="research-grid fade-up">
+      <!-- 上级 -->
+      <div class="research-col">
+        <div class="research-col-head">
+          <div class="research-icon-circle" style="background:rgba(192,49,26,0.1);">🏆</div>
+          <div>
+            <div class="research-col-title">上级商场</div>
+            <div class="research-col-sub">同城标杆 · 对标顶部</div>
+          </div>
+        </div>
+        <ul class="research-items">
+          <li>同城定位高于本店的标杆购物中心</li>
+          <li>餐饮板块前 10 / 15 品牌名单</li>
+          <li>各品牌月均销售额及销售排名</li>
+          <li>各品牌租金水平与坪效表现</li>
+          <li>业态组合特点与品类比例</li>
+        </ul>
+      </div>
+      <!-- 周边 -->
+      <div class="research-col">
+        <div class="research-col-head">
+          <div class="research-icon-circle" style="background:rgba(200,146,42,0.1);">📍</div>
+          <div>
+            <div class="research-col-title">周边商场</div>
+            <div class="research-col-sub">竞争圈层 · 直接对标</div>
+          </div>
+        </div>
+        <ul class="research-items">
+          <li>3—5 公里内主要竞争项目</li>
+          <li>同品类品牌分布与重叠度</li>
+          <li>客流与坪效对比分析</li>
+          <li>差异化品牌资源机会点</li>
+          <li>对方引进的新品牌动态追踪</li>
+        </ul>
+      </div>
+      <!-- 本地 -->
+      <div class="research-col">
+        <div class="research-col-head">
+          <div class="research-icon-circle" style="background:rgba(52,168,83,0.1);">🌆</div>
+          <div>
+            <div class="research-col-title">本地市场</div>
+            <div class="research-col-sub">本土资源 · 消费趋势</div>
+          </div>
+        </div>
+        <ul class="research-items">
+          <li>本地头部餐饮品牌排行</li>
+          <li>新兴网红品牌与消费趋势</li>
+          <li>本土餐饮品牌扩张意愿</li>
+          <li>街边餐饮升级进商场意向</li>
+          <li>线上外卖平台高分店研究</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="output-banner fade-up">
+      <span class="output-banner-label">调研输出</span>
+      <div class="output-tags">
+        <span class="output-tag">品牌名称</span>
+        <span class="output-tag">所属品类</span>
+        <span class="output-tag">面积</span>
+        <span class="output-tag">月均销售额</span>
+        <span class="output-tag">月租金</span>
+        <span class="output-tag">坪效排名</span>
+        <span class="output-tag">经营能力评估</span>
+        <span class="output-tag">线上运营能力</span>
+      </div>
+    </div>
+
+    <div class="card-grid-3 fade-up">
+      <div class="card">
+        <span class="card-tag">TOP 10 / TOP 15</span>
+        <div class="card-title">为什么是前10或15？</div>
+        <div class="card-body">行业头部品牌代表消费者真实投票结果，是经过市场验证的强势资源。把这些品牌纳入目标清单，你才有可谈的筹码，才能识别哪些是你真正能拿到的。</div>
+      </div>
+      <div class="card">
+        <span class="card-tag">动态更新</span>
+        <div class="card-title">调研不是一次性动作</div>
+        <div class="card-body">市场每月都在变，品牌在开门、关门、调整。调研数据要做到每月滚动更新，新冒出的好品牌及时纳入，已经跑出去的品牌及时剔除。</div>
+      </div>
+      <div class="card">
+        <span class="card-tag">形成清单</span>
+        <div class="card-title">必须落成书面清单</div>
+        <div class="card-body">调研结果必须白纸黑字列出来——这不是"我知道几个品牌"，而是一张可以拍板决策的数据表，是后续内部复盘和目标品牌筛选的唯一依据。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── S2: 内部复盘 ─────────────────────────────────────── -->
+<section class="section" id="s2">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="eyebrow-num">02</span>
+        <span class="eyebrow-label">第二步 · 对自己要非常清楚</span>
+      </div>
+      <h2 class="section-title">内部<em>复盘</em></h2>
+      <p class="section-lead">你的餐饮品类是否完整？哪些是良性的不需要动？哪些有空缺必须招调？搞清楚自己，才能精准出拳。</p>
+    </div>
+
+    <div class="review-layout">
+
+      <div class="fade-up">
+        <div class="table-wrapper">
+          <div class="table-header-bar">
+            <span>餐饮品类复盘表</span>
+            <span class="badge">每月动态更新</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>品类</th>
+                <th>现有品牌</th>
+                <th>良性评估</th>
+                <th>招调方向</th>
+                <th>目标品牌 (1:3)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>中餐</strong></td>
+                <td>小菜园</td>
+                <td><span class="cat-badge status-good">✓ 良性</span></td>
+                <td><span class="cat-badge status-empty">暂不招调</span></td>
+                <td style="color:var(--gray-light)">—</td>
+              </tr>
+              <tr>
+                <td><strong>火锅</strong></td>
+                <td style="color:var(--gray-light)">空缺</td>
+                <td><span class="cat-badge status-empty">—</span></td>
+                <td><span class="cat-badge status-bad">必须招调</span></td>
+                <td>品牌A / B / C</td>
+              </tr>
+              <tr>
+                <td><strong>烤肉</strong></td>
+                <td style="color:var(--gray-light)">空缺</td>
+                <td><span class="cat-badge status-empty">—</span></td>
+                <td><span class="cat-badge status-bad">必须招调</span></td>
+                <td>品牌D / E / F</td>
+              </tr>
+              <tr>
+                <td><strong>烤鱼</strong></td>
+                <td>半天妖</td>
+                <td><span class="cat-badge status-good">✓ 良性</span></td>
+                <td><span class="cat-badge status-empty">暂不招调</span></td>
+                <td style="color:var(--gray-light)">—</td>
+              </tr>
+              <tr>
+                <td><strong>日料</strong></td>
+                <td style="color:var(--gray-light)">空缺</td>
+                <td><span class="cat-badge status-empty">—</span></td>
+                <td><span class="cat-badge status-need">评估中</span></td>
+                <td>待定</td>
+              </tr>
+              <tr>
+                <td><strong>茶饮</strong></td>
+                <td>多品牌</td>
+                <td><span class="cat-badge status-good">✓ 充足</span></td>
+                <td><span class="cat-badge status-empty">暂不招调</span></td>
+                <td style="color:var(--gray-light)">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ratio-visual">
+          <div class="ratio-box primary">
+            <span class="ratio-num">1</span>
+            <div class="ratio-label">目标铺位</div>
+          </div>
+          <div class="ratio-colon">:</div>
+          <div class="ratio-box secondary">
+            <span class="ratio-num">3</span>
+            <div class="ratio-label">备选品牌</div>
+          </div>
+          <div class="ratio-desc">
+            每个目标品类至少准备 <strong>3 个备选品牌</strong>，动态维护。一个谈崩了，立刻推进下一个，保证招商节奏不断档。
+          </div>
+        </div>
+      </div>
+
+      <div class="question-cards fade-up">
+
+        <div class="q-card">
+          <div class="q-card-head" style="background:rgba(192,49,26,0.06); border-bottom:1px solid rgba(192,49,26,0.1)">
+            <span class="q-num" style="color:var(--red)">Q1</span>
+            <span class="q-title">品类是否完整？有没有缺项？</span>
+          </div>
+          <div class="q-body">
+            把你项目里所有餐饮品类全部列出来，对标竞品，识别<strong>空白品类</strong>——有些业态市场上有消费需求，但你没有，那就是缺口，就是招调的优先方向。
+            <div class="q-highlight">
+              ⚡ 如果火锅空缺，那火锅就是必须招调的。你不能因为难招就跳过它，用另一个中餐凑数。
+            </div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="q-card-head" style="background:rgba(200,146,42,0.06); border-bottom:1px solid rgba(200,146,42,0.1)">
+            <span class="q-num" style="color:var(--gold)">Q2</span>
+            <span class="q-title">现有品牌是良性还是非良性？</span>
+          </div>
+          <div class="q-body">
+            一个一个评估你现有品牌的健康度：销售是否稳定？坪效是否达标？客诉是否多？<strong>良性的，就不需要招调</strong>，集中资源攻坚真正需要补的。
+            <div class="q-highlight">
+              ⚡ 小菜园经营良性 → 中餐不招调。不要因为"有个中餐要进来"就盲目引进，造成同品类内耗。
+            </div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="q-card-head" style="background:rgba(26,16,8,0.04); border-bottom:1px solid rgba(26,16,8,0.06)">
+            <span class="q-num" style="color:var(--ink)">Q3</span>
+            <span class="q-title">26年主攻哪几个品类？</span>
+          </div>
+          <div class="q-body">
+            结合客群画像、商圈空白和品牌可行性，<strong>锁定今年重点突破的 2—3 个品类</strong>，集中团队资源深度攻坚，而不是"撒芝麻盐"式分散招商。
+            <div class="q-highlight">
+              ⚡ 今年定死 3—5 个目标，其余 15 个持续维护但不主攻。集中才能打穿，分散只会拖延。
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-marker" style="margin-top:48px;">
+      <div class="sm-line"></div>
+      <div class="sm-text">核心原则</div>
+      <div class="sm-line"></div>
+    </div>
+
+    <div class="card-grid-3 fade-up">
+      <div class="card">
+        <span class="card-icon">🚫</span>
+        <div class="card-title">不能随意变动品类目标</div>
+        <div class="card-body">一旦锁定「烤肉缺、必须招」，就不能因为碰巧有个中餐品牌愿意进来就妥协。<strong>品类编配是战略，不是将就</strong>。偏离了，就是补铺，不是招商。</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🔄</span>
+        <div class="card-title">目标品牌可以动，品类不能动</div>
+        <div class="card-body">市场变化，具体品牌每月可以调整——A谈崩换B，B不合适换C——但你的<strong>品类招商目标不能动</strong>，必须持续朝着同一个品类方向推进。</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">📏</span>
+        <div class="card-title">品类数量要匹配铺位规模</div>
+        <div class="card-body">总共10个餐饮铺位，招2个同类火锅就不合适；如果餐饮规模大，可以引入<strong>鲜牛肉火锅、川渝火锅、小火锅</strong>等差异化火锅品类共存。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── S3: 招商策略 ─────────────────────────────────────── -->
+<section class="section" id="s3">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="eyebrow-num">03</span>
+        <span class="eyebrow-label">第三步 · 撬动逻辑</span>
+      </div>
+      <h2 class="section-title">招商<em>策略</em></h2>
+      <p class="section-lead">招商不靠等，靠撬。一个足够强的核心品牌，能带动整个餐饮板块的招商节奏，否则团队只能在里面慢慢补铺，改变不了大局。</p>
+    </div>
+
+    <div class="strategy-grid fade-up">
+      <div class="strat-cell">
+        <div class="strat-num">1</div>
+        <div class="strat-title"><span class="strat-title-icon">🎯</span>确定年度主攻目标</div>
+        <div class="strat-body">
+          从目标品牌总池（20个左右）中，<strong>锁定今年主攻的3—5个</strong>，集中资源全力攻破。其余品牌持续维护关系，但不是今年主力。<br><br>
+          制定三年计划：26年攻5个，27年再攻5个，节奏可控，目标可达。
+        </div>
+      </div>
+      <div class="strat-cell">
+        <div class="strat-num">2</div>
+        <div class="strat-title"><span class="strat-title-icon">🏗️</span>以强品牌撬动招商</div>
+        <div class="strat-body">
+          核心逻辑：<strong>引进一个足够大的品牌 → 形成1+2或1+3的餐饮矩阵 → 带动整体招商</strong>。<br><br>
+          衢州为什么要进NEED？——单靠普通招商已经很难推动，必须引入一个影响力足够大的品牌来撬动整体餐饮格局。
+        </div>
+      </div>
+      <div class="strat-cell">
+        <div class="strat-num">3</div>
+        <div class="strat-title"><span class="strat-title-icon">💰</span>装补要花在刀刃上</div>
+        <div class="strat-body">
+          装修补贴不是滥发福利，而是<strong>战略性投入</strong>——把钱集中砸在核心目标品牌上，用装补锁定它，用它去撬动你整体餐饮的招商效率。<br><br>
+          不花这笔钱，招商就是慢慢熬；花了这笔钱，整个格局可以打开。
+        </div>
+      </div>
+      <div class="strat-cell">
+        <div class="strat-num">4</div>
+        <div class="strat-title"><span class="strat-title-icon">📅</span>像筹备店一样设节点</div>
+        <div class="strat-body">
+          每家门店的餐饮招调必须<strong>像筹备店一样干</strong>——设好节点，到点交卷，不能拖。<br><br>
+          筹备店里3个月没完成招商指标，必须换人。这个逻辑同样适用于正在营业的门店调改招商。
+        </div>
+      </div>
+    </div>
+
+    <!-- 撬动案例 -->
+    <div class="leverage-case fade-up">
+      <div class="lc-left">
+        <div class="lc-label">撬动模型 · 实战案例</div>
+        <div class="lc-title">一个品牌<br>如何盘活整个<br>餐饮板块？</div>
+        <div class="lc-body">
+          以海底捞、NEED等头部品牌为支点，一旦它们进场，周边中小餐饮品牌会主动找上门，谈判难度大幅降低，整体租金水平也随之提升。砸进去的200万装补，两三年就能收回来。
+        </div>
+      </div>
+      <div class="lc-right">
+        <div class="lc-step">
+          <span class="lc-step-icon">🔍</span>
+          <div>
+            <div class="lc-step-title">Step 1 · 识别撬动品牌</div>
+            <div class="lc-step-desc">从目标清单中找到影响力最大、带客能力最强的1个核心品牌作为"支点"</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <span class="lc-step-icon">💸</span>
+          <div>
+            <div class="lc-step-title">Step 2 · 不惜代价拿下</div>
+            <div class="lc-step-desc">砸装补、给优惠期、主动拜访BD，海底捞值得砸200万；算好ROI，说服业主方认可</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <span class="lc-step-icon">🧲</span>
+          <div>
+            <div class="lc-step-title">Step 3 · 形成1+2/1+3矩阵</div>
+            <div class="lc-step-desc">以核心品牌为锚，快速补齐2—3个配套品牌，形成有聚集效应的餐饮矩阵</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <span class="lc-step-icon">📈</span>
+          <div>
+            <div class="lc-step-title">Step 4 · 拉升整体租金</div>
+            <div class="lc-step-desc">餐饮板块成势后，整体坪效和客流提升，同区域品牌租金可提升10元/㎡以上</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── S4: 招商计划 ─────────────────────────────────────── -->
+<section class="section" id="s4">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="eyebrow-num">04</span>
+        <span class="eyebrow-label">第四步 · 落地执行</span>
+      </div>
+      <h2 class="section-title">招商<em>计划</em></h2>
+      <p class="section-lead">策略确定之后，目标品牌分解进计划表，每个品牌追踪六大节点，责任到人，时间到周，一环扣一环。</p>
+    </div>
+
+    <div class="pipeline fade-up">
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">1</div>
+        <div class="pipe-name">品牌锁定</div>
+        <div class="pipe-desc">从品类库确认<br>目标品牌清单</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">2</div>
+        <div class="pipe-name">看场</div>
+        <div class="pipe-desc">约访现场参观<br>确认需求匹配</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">3</div>
+        <div class="pipe-name">意向</div>
+        <div class="pipe-desc">初步条件确认<br>签订意向书</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">4</div>
+        <div class="pipe-name">合同</div>
+        <div class="pipe-desc">条款深度谈判<br>正式合同签订</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">5</div>
+        <div class="pipe-name">进场</div>
+        <div class="pipe-desc">装修施工入场<br>开业筹备启动</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num-wrap">6</div>
+        <div class="pipe-name">责任人</div>
+        <div class="pipe-desc">专属对接人<br>全程节点跟进</div>
+      </div>
+    </div>
+
+    <!-- 计划表示例 -->
+    <div class="plan-table-wrap fade-up">
+      <div class="plan-table-head">
+        <span>招商计划执行追踪表（示例）</span>
+        <span class="live-badge">每周例会更新</span>
+      </div>
+      <div class="plan-table">
+        <table>
+          <thead>
+            <tr>
+              <th>品牌名称</th>
+              <th>品类</th>
+              <th>看场时间</th>
+              <th>意向确认</th>
+              <th>合同签署</th>
+              <th>计划进场</th>
+              <th>当前进度</th>
+              <th>责任人</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>海底捞（示例）</strong></td>
+              <td>火锅</td>
+              <td>4月第1周</td>
+              <td>4月第3周</td>
+              <td>5月第2周</td>
+              <td>7月1日</td>
+              <td><span class="stage-dot dot-intent">● 意向中</span></td>
+              <td>张XX</td>
+            </tr>
+            <tr>
+              <td><strong>品牌A（示例）</strong></td>
+              <td>烤肉</td>
+              <td>4月第2周</td>
+              <td>5月第1周</td>
+              <td>6月第1周</td>
+              <td>8月1日</td>
+              <td><span class="stage-dot dot-progress">● 跟进中</span></td>
+              <td>李XX</td>
+            </tr>
+            <tr>
+              <td><strong>品牌B（示例）</strong></td>
+              <td>日料</td>
+              <td>5月第1周</td>
+              <td>5月第3周</td>
+              <td>7月第1周</td>
+              <td>9月1日</td>
+              <td><span class="stage-dot dot-pending">● 待看场</span></td>
+              <td>王XX</td>
+            </tr>
+            <tr>
+              <td><strong>品牌C（示例）</strong></td>
+              <td>火锅</td>
+              <td>已完成</td>
+              <td>已完成</td>
+              <td>已完成</td>
+              <td>6月15日</td>
+              <td><span class="stage-dot dot-sign">✓ 已签约</span></td>
+              <td>赵XX</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="timeline-note">
+        ⚡ 超期未推进须在日会说明原因 — 3个月无进展，必须换人跟进
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── S5: 保障措施 ─────────────────────────────────────── -->
+<section class="section" id="s5">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="eyebrow-num">05</span>
+        <span class="eyebrow-label">第五步 · 机制保驾</span>
+      </div>
+      <h2 class="section-title">保障<em>措施</em></h2>
+      <p class="section-lead">好的计划也需要机制保障。月度会、日会、激励政策、节点考核，缺少任何一环，计划都会走形。</p>
+    </div>
+
+    <div class="guarantee-grid fade-up">
+      <div class="g-card">
+        <div class="g-card-head">
+          <div class="g-icon-wrap" style="background:rgba(192,49,26,0.1);">📅</div>
+          <div>
+            <div class="g-card-title">月度专项会</div>
+            <div class="g-card-subtitle">区域层面 · 每月一次</div>
+          </div>
+        </div>
+        <div class="g-card-body">
+          <ul class="g-list">
+            <li>每月召开餐饮招商专项例会，区域统一协调</li>
+            <li>复盘上月目标达成情况，识别卡点与偏差</li>
+            <li>各门店汇报品牌进展与资源需求</li>
+            <li>明确本月主攻品牌、策略调整方向</li>
+            <li>区域品牌资源共享与协同推进</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="g-card">
+        <div class="g-card-head">
+          <div class="g-icon-wrap" style="background:rgba(200,146,42,0.1);">☀️</div>
+          <div>
+            <div class="g-card-title">门店日会</div>
+            <div class="g-card-subtitle">门店层面 · 每日晨会</div>
+          </div>
+        </div>
+        <div class="g-card-body">
+          <ul class="g-list">
+            <li>每日晨会同步前日招商拜访情况</li>
+            <li>确认当日拜访品牌清单和责任人</li>
+            <li>招商人员逐一汇报，问题当日上报</li>
+            <li>超期未推进品牌须给出明确说明</li>
+            <li>店总掌握全盘进度，及时决策介入</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="g-card">
+        <div class="g-card-head">
+          <div class="g-icon-wrap" style="background:rgba(52,168,83,0.1);">🏆</div>
+          <div>
+            <div class="g-card-title">激励政策</div>
+            <div class="g-card-subtitle">正向驱动 · 结果导向</div>
+          </div>
+        </div>
+        <div class="g-card-body">
+          <ul class="g-list">
+            <li>引进核心品牌（如海底捞）奖励1—2万元</li>
+            <li>阶梯式绩效激励，完成越多奖励越高</li>
+            <li>月度/季度优秀招商员评比与表彰</li>
+            <li>装补审批绿色通道，快速支持核心谈判</li>
+            <li>团队与个人KPI联动，集体协作有奖励</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="g-card">
+        <div class="g-card-head">
+          <div class="g-icon-wrap" style="background:rgba(66,133,244,0.1);">📊</div>
+          <div>
+            <div class="g-card-title">节点考核</div>
+            <div class="g-card-subtitle">硬约束 · 必须交卷</div>
+          </div>
+        </div>
+        <div class="g-card-body">
+          <ul class="g-list">
+            <li>看场量、意向率作为双核心考核指标</li>
+            <li>合同转化率按月追踪，偏差及时预警</li>
+            <li>每位招商人员负责品牌达成情况挂钩考核</li>
+            <li>3个月无指标达成，必须换人，无例外</li>
+            <li>招商进度与薪资、晋升直接挂钩</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-box fade-up">
+      <span class="warning-icon">⚡</span>
+      <div>
+        <div class="warning-title">这不是开玩笑的</div>
+        <div class="warning-body">
+          筹备店里三个月没有完成一个招商指标，<strong>必须换人，马上下岗</strong>。在营业门店的调改招商也是同样的逻辑——你不这样定，招商就能混过去；这样定了，他必须交卷。
+          <br><br>
+          <strong>每一家门店的餐饮调改，必须像筹备店一样去干。</strong>有节点、有考核、有激励、有人盯，这套机制缺一不可。
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── CLOSING ──────────────────────────────────────────── -->
+<section id="closing">
+  <div class="closing-inner">
+    <div class="closing-label">记住这个逻辑</div>
+    <h2 class="closing-title">不是补铺，<br>是<em>系统作战</em></h2>
+    <p class="closing-body">
+      每一步都有依据，每一个品牌都有来源，每一个节点都有人负责。
+      这才是餐饮招商该有的样子。
+    </p>
+    <div class="closing-steps">
+      <span class="cs-item">01 外部调研</span>
+      <span class="cs-sep">→</span>
+      <span class="cs-item">02 内部复盘</span>
+      <span class="cs-sep">→</span>
+      <span class="cs-item">03 招商策略</span>
+      <span class="cs-sep">→</span>
+      <span class="cs-item">04 招商计划</span>
+      <span class="cs-sep">→</span>
+      <span class="cs-item">05 保障措施</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Progress bar
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / total) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // Nav active state
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+
+  // Fade-up on scroll
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        fadeObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  fadeEls.forEach(el => fadeObserver.observe(el));
+</script>
+</body>
+</html>
