@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞书会议纪要 × Claude → 培训课件｜AI工作流操作指南</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --blue: #1456F5;
+  --blue-pale: #EBF0FF;
+  --blue-mid: #4a7cff;
+  --feishu: #2B5FDE;
+  --claude: #C0502A;
+  --orange: #F07020;
+  --green: #10a37f;
+  --ink: #0D1117;
+  --ink-soft: #2A3244;
+  --gray: #64748B;
+  --gray-light: #E2E8F2;
+  --bg: #F4F6FC;
+  --white: #FFFFFF;
+  --card: #FFFFFF;
+  --shadow: 0 2px 16px rgba(20,86,245,0.08);
+  --shadow-md: 0 6px 32px rgba(20,86,245,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── 进度条 ── */
+#prog { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg,var(--feishu),var(--claude)); z-index: 200; transition: width .1s; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.96); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--gray-light);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 40px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Noto Serif SC', serif; font-size: 13px; font-weight: 700; color: var(--ink);
+}
+.logo-feishu { background: var(--feishu); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+.logo-x { color: var(--gray); font-size: 14px; }
+.logo-claude { background: var(--claude); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+.nav-steps { display: flex; gap: 2px; list-style: none; }
+.nav-steps a { color: var(--gray); text-decoration: none; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 5px; transition: all .2s; }
+.nav-steps a:hover, .nav-steps a.active { background: var(--blue-pale); color: var(--blue); font-weight: 700; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh; padding-top: 52px;
+  background: var(--ink);
+  display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; overflow: hidden;
+}
+.hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hb-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(20,86,245,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(20,86,245,0.07) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.hb-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+.orb-f { width: 480px; height: 480px; background: rgba(43,95,222,0.2); top: -80px; left: -50px; animation: ao 9s ease-in-out infinite; }
+.orb-c { width: 360px; height: 360px; background: rgba(192,80,42,0.15); bottom: 0; right: 50px; animation: ao 11s ease-in-out infinite reverse; }
+@keyframes ao { 0%,100%{transform:translate(0,0)scale(1)} 50%{transform:translate(20px,-25px)scale(1.06)} }
+
+.hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 50px 80px 80px; position: relative; z-index: 2;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.75); font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; padding: 6px 14px; border-radius: 3px;
+  width: fit-content; margin-bottom: 28px;
+}
+.hero-badge::before { content:''; width:6px; height:6px; background: #34d399; border-radius: 50%; animation: bk 2s infinite; }
+@keyframes bk { 0%,100%{opacity:1}50%{opacity:.3} }
+
+.hero-title { font-family: 'Noto Serif SC', serif; font-size: clamp(32px,4vw,52px); font-weight: 900; color: white; line-height: 1.2; letter-spacing: -1px; margin-bottom: 10px; }
+.hero-title .tf { color: #7AA8FF; }
+.hero-title .tc { color: #FFB085; }
+.hero-sub { font-size: 14px; color: rgba(255,255,255,.35); letter-spacing: 3px; margin-bottom: 32px; }
+.hero-desc { font-size: 14px; color: rgba(255,255,255,.55); max-width: 440px; line-height: 1.9; border-left: 3px solid var(--feishu); padding-left: 18px; margin-bottom: 36px; }
+.hero-desc strong { color: rgba(255,255,255,.85); }
+
+.hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+.pill { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.6); font-size: 12px; font-weight: 500; padding: 6px 16px; border-radius: 3px; letter-spacing: .5px; }
+
+.hero-right {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 60px 80px 20px; position: relative; z-index: 2;
+}
+.flow-preview { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 28px; }
+.fp-label { font-size: 10px; font-weight: 700; letter-spacing: 4px; color: rgba(255,255,255,.3); text-transform: uppercase; margin-bottom: 20px; }
+.fp-steps { display: flex; flex-direction: column; gap: 0; }
+.fp-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.06);
+  position: relative;
+}
+.fp-step:last-child { border-bottom: none; }
+.fp-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; position: relative; z-index: 1;
+}
+.fp-info {}
+.fp-step-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.82); margin-bottom: 3px; }
+.fp-step-desc { font-size: 11px; color: rgba(255,255,255,.35); line-height: 1.6; }
+.fp-arrow { text-align: center; color: rgba(255,255,255,.12); font-size: 12px; padding: 3px 0 3px 16px; }
+
+/* ── SECTION BASE ── */
+.sec { padding: 88px 0; }
+.sec:nth-child(odd) { background: var(--bg); }
+.sec:nth-child(even) { background: #ECEEF8; }
+.container { max-width: 1120px; margin: 0 auto; padding: 0 56px; }
+
+.sec-head { margin-bottom: 52px; }
+.sec-eye { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.sec-num { font-family: 'Noto Serif SC', serif; font-size: 11px; font-weight: 900; color: white; width: 26px; height: 26px; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sec-lbl { font-size: 11px; font-weight: 700; letter-spacing: 4px; color: var(--gray); text-transform: uppercase; }
+.sec-title { font-family: 'Noto Serif SC', serif; font-size: clamp(24px,3vw,36px); font-weight: 900; color: var(--ink); line-height: 1.2; margin-bottom: 12px; }
+.sec-title em { font-style: normal; color: var(--feishu); }
+.sec-title .ec { font-style: normal; color: var(--claude); }
+.sec-lead { font-size: 15px; color: var(--gray); max-width: 640px; line-height: 1.85; }
+
+/* ── 通用卡片 ── */
+.card {
+  background: var(--card); border-radius: 8px;
+  padding: 24px 26px; box-shadow: var(--shadow);
+  border: 1px solid rgba(20,86,245,.06);
+  transition: all .3s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+/* ── STEP BLOCKS ── */
+.step-block {
+  display: grid; grid-template-columns: auto 1fr; gap: 0;
+  margin-bottom: 3px;
+}
+.step-num-col { display: flex; flex-direction: column; align-items: center; }
+.step-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900;
+  color: white; flex-shrink: 0;
+}
+.step-connector { width: 2px; flex: 1; min-height: 24px; margin: 6px 0; background: var(--gray-light); }
+.step-block:last-child .step-connector { display: none; }
+.step-body { padding: 0 0 32px 24px; }
+.step-title { font-family: 'Noto Serif SC', serif; font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+.step-source-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  padding: 3px 10px; border-radius: 3px; color: white;
+}
+.step-lead { font-size: 14px; color: var(--gray); line-height: 1.85; margin-bottom: 18px; }
+
+/* 操作卡 */
+.op-card {
+  background: var(--card); border-radius: 8px;
+  border: 1px solid var(--gray-light);
+  overflow: hidden; box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.op-head {
+  padding: 14px 20px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid var(--gray-light);
+}
+.op-head-left { display: flex; align-items: center; gap: 10px; }
+.op-icon { font-size: 18px; }
+.op-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.op-time { font-size: 11px; font-weight: 600; color: var(--gray); background: var(--bg); padding: 3px 10px; border-radius: 12px; }
+.op-body { padding: 16px 20px; }
+.op-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.8; margin-bottom: 12px; }
+
+/* 代码/指令块 */
+.cmd-block {
+  background: #1a2035; border-radius: 6px;
+  padding: 14px 18px; position: relative; margin: 12px 0;
+}
+.cmd-label { font-size: 9px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,.3); text-transform: uppercase; margin-bottom: 8px; }
+.cmd-text { font-family: 'Courier New', monospace; font-size: 13px; color: #a8d8a8; line-height: 1.65; white-space: pre-wrap; word-break: break-all; }
+.cmd-text .k { color: #7AA8FF; }
+.cmd-text .v { color: #FFD98E; }
+.cmd-text .c { color: rgba(255,255,255,.35); }
+.cmd-copy {
+  position: absolute; top: 10px; right: 12px;
+  background: rgba(255,255,255,.08); color: rgba(255,255,255,.5);
+  border: 1px solid rgba(255,255,255,.1); border-radius: 4px;
+  font-size: 10px; padding: 3px 8px; cursor: pointer; transition: all .2s;
+}
+.cmd-copy:hover { background: rgba(255,255,255,.15); color: white; }
+
+/* 截图模拟框 */
+.screenshot-sim {
+  background: var(--card); border-radius: 8px;
+  border: 1px solid var(--gray-light);
+  overflow: hidden; box-shadow: var(--shadow-md);
+  margin: 16px 0;
+}
+.ss-bar {
+  background: #f1f3f9; padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--gray-light);
+}
+.ss-dot { width: 10px; height: 10px; border-radius: 50%; }
+.ss-url { flex: 1; background: white; border-radius: 4px; padding: 4px 12px; font-size: 11px; color: var(--gray); }
+.ss-body { padding: 20px; }
+
+/* 飞书界面模拟 */
+.feishu-sim {
+  background: #fff; border-radius: 6px; border: 1px solid #e0e4ef; overflow: hidden;
+}
+.fs-topbar { background: #2B5FDE; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.fs-logo { color: white; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+.fs-title { color: rgba(255,255,255,.85); font-size: 12px; }
+.fs-content { padding: 16px; }
+.fs-meeting-info { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f0f2f8; }
+.fs-meeting-icon { font-size: 22px; }
+.fs-meeting-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.fs-meeting-sub { font-size: 11px; color: var(--gray); }
+.fs-tabs { display: flex; gap: 0; border-bottom: 1px solid #e8ecf4; margin-bottom: 14px; }
+.fs-tab { padding: 8px 16px; font-size: 12px; color: var(--gray); cursor: pointer; border-bottom: 2px solid transparent; }
+.fs-tab.active { color: var(--feishu); border-bottom-color: var(--feishu); font-weight: 700; }
+.fs-transcript { display: flex; flex-direction: column; gap: 10px; }
+.fs-line { display: flex; gap: 10px; align-items: flex-start; }
+.fs-time { font-size: 11px; color: var(--gray); min-width: 60px; padding-top: 2px; }
+.fs-speaker { font-size: 11px; font-weight: 700; color: var(--feishu); min-width: 50px; padding-top: 2px; }
+.fs-text { font-size: 12px; color: var(--ink-soft); line-height: 1.65; }
+.fs-highlight { background: rgba(255,193,7,.2); border-radius: 2px; padding: 0 2px; }
+.fs-copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px; background: var(--feishu); color: white;
+  font-size: 12px; font-weight: 600; padding: 8px 16px;
+  border-radius: 5px; cursor: pointer; width: fit-content;
+}
+
+/* Claude界面模拟 */
+.claude-sim {
+  background: #faf9f7; border-radius: 6px; border: 1px solid #e8e4df; overflow: hidden;
+}
+.cl-topbar { background: var(--claude); padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.cl-logo { color: white; font-size: 13px; font-weight: 700; }
+.cl-prompt-area { padding: 14px 16px; }
+.cl-prompt-box {
+  background: white; border: 1.5px solid var(--claude);
+  border-radius: 8px; padding: 14px 16px;
+  font-size: 12px; color: var(--ink-soft); line-height: 1.75;
+}
+.cl-prompt-label { font-size: 10px; font-weight: 700; color: var(--claude); letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+.cl-response { background: #fff8f5; border: 1px solid rgba(192,80,42,.15); border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+.cl-response-label { font-size: 10px; font-weight: 700; color: var(--claude); letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+.cl-output { font-size: 12px; color: var(--ink-soft); line-height: 1.75; }
+.cl-output strong { color: var(--claude); }
+
+/* 提示框 */
+.tip-box {
+  display: flex; gap: 14px; padding: 16px 20px;
+  border-radius: 6px; border-left: 4px solid;
+  font-size: 13px; line-height: 1.75;
+}
+.tip-icon { font-size: 18px; flex-shrink: 0; }
+.tip-body {}
+.tip-title { font-weight: 700; margin-bottom: 4px; }
+.tip-blue { background: var(--blue-pale); border-color: var(--feishu); color: var(--ink-soft); }
+.tip-orange { background: #FFF5EE; border-color: var(--orange); color: var(--ink-soft); }
+.tip-green { background: #EDFAF6; border-color: var(--green); color: var(--ink-soft); }
+
+/* 连接器 */
+.connector {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin: 32px 0;
+}
+.conn-box {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 6px;
+  font-size: 13px; font-weight: 700;
+}
+.conn-arrow { font-size: 20px; color: var(--gray-light); }
+
+/* 成果展示 */
+.result-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 28px; }
+.r-card {
+  background: var(--card); border-radius: 8px; padding: 22px;
+  box-shadow: var(--shadow); border: 1px solid rgba(20,86,245,.06);
+  text-align: center; transition: all .3s;
+}
+.r-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.r-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+.r-name { font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.r-desc { font-size: 13px; color: var(--gray); line-height: 1.75; }
+
+/* 最佳实践 */
+.best-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.b-card { background: var(--card); border-radius: 8px; padding: 22px; box-shadow: var(--shadow); border: 1px solid rgba(20,86,245,.06); }
+.b-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.b-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.b-list li { display: flex; gap: 8px; font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+.b-list li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.b-list li.bad::before { content: '✗'; color: #ef4444; }
+.b-list li.bad { color: var(--gray); text-decoration: line-through; text-decoration-color: #ef4444; }
+
+/* CLOSING */
+#closing { background: var(--ink); padding: 88px 0; text-align: center; position: relative; overflow: hidden; }
+#closing::before { content:''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, rgba(43,95,222,.2) 0%, transparent 60%); }
+.cl-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; padding: 0 40px; }
+.cl-label { font-size: 10px; font-weight: 700; letter-spacing: 5px; color: var(--orange); margin-bottom: 18px; text-transform: uppercase; }
+.cl-title { font-family: 'Noto Serif SC', serif; font-size: clamp(28px,4vw,44px); font-weight: 900; color: white; line-height: 1.2; margin-bottom: 20px; }
+.cl-title em { font-style: normal; color: #7AA8FF; }
+.cl-body { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.9; margin-bottom: 40px; }
+.value-pills { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.vp { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 5px; padding: 10px 18px; }
+.vp-icon { font-size: 18px; }
+.vp-text { font-size: 12px; color: rgba(255,255,255,.65); font-weight: 500; }
+.vp-num { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; color: #7AA8FF; }
+
+/* 动画 */
+.fade-up { opacity: 0; transform: translateY(18px); transition: all .6s cubic-bezier(.16,1,.3,1); }
+.fade-up.vis { opacity: 1; transform: translateY(0); }
+.fade-up:nth-child(1){transition-delay:0s}
+.fade-up:nth-child(2){transition-delay:.08s}
+.fade-up:nth-child(3){transition-delay:.16s}
+.fade-up:nth-child(4){transition-delay:.24s}
+
+@media(max-width:900px){
+  #hero{grid-template-columns:1fr} .hero-right{display:none} .hero-left{padding:50px 24px}
+  .container{padding:0 20px} .result-grid,.best-grid{grid-template-columns:1fr}
+  nav{padding:0 16px} .nav-steps{display:none} .sec{padding:60px 0}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="logo-feishu">飞书</span>
+    <span class="logo-x">×</span>
+    <span class="logo-claude">Claude</span>
+    <span style="color:var(--gray);font-size:12px;font-weight:400;margin-left:4px">培训课件生成工作流</span>
+  </div>
+  <ul class="nav-steps">
+    <li><a href="#s1">① 获取会议纪要</a></li>
+    <li><a href="#s2">② 提炼关键内容</a></li>
+    <li><a href="#s3">③ 构建Prompt</a></li>
+    <li><a href="#s4">④ 生成课件</a></li>
+    <li><a href="#s5">⑤ 迭代优化</a></li>
+    <li><a href="#s6">最佳实践</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hb-grid"></div>
+    <div class="hb-orb orb-f"></div>
+    <div class="hb-orb orb-c"></div>
+  </div>
+  <div class="hero-left">
+    <div class="hero-badge">大区总经理 AI 工作流实战指南</div>
+    <h1 class="hero-title">
+      <span class="tf">飞书会议纪要</span><br>
+      <span style="color:rgba(255,255,255,.4);font-size:0.6em;font-weight:400;letter-spacing:2px">结合</span><br>
+      <span class="tc">Claude AI</span><br>
+      <span style="font-size:0.58em;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:1px">一键生成培训课件</span>
+    </h1>
+    <p class="hero-sub">从下门店 → 开会议 → 出课件，全流程提效</p>
+    <p class="hero-desc">
+      大区总下门店做业务指导，讲了<strong>2小时关键方法论</strong>——以往这些内容全靠笔记整理，效率低且易遗漏。
+      现在，借助<strong>飞书自动生成的会议文字记录</strong>，配合<strong>Claude</strong>，
+      10分钟即可生成一份专业的可交付培训课件。
+    </p>
+    <div class="hero-pills">
+      <span class="pill">📍 适用场景：大区总下店指导</span>
+      <span class="pill">⏱️ 全程约 10 分钟</span>
+      <span class="pill">🎯 零代码，人人可用</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="flow-preview">
+      <div class="fp-label">工作流概览</div>
+      <div class="fp-steps">
+        <div class="fp-step">
+          <div class="fp-dot" style="background:rgba(43,95,222,.2)">📹</div>
+          <div class="fp-info">
+            <div class="fp-step-title">飞书会议 · 全程录音转写</div>
+            <div class="fp-step-desc">会议自动生成文字记录，无需手动整理笔记</div>
+          </div>
+        </div>
+        <div class="fp-arrow">↓</div>
+        <div class="fp-step">
+          <div class="fp-dot" style="background:rgba(43,95,222,.2)">📋</div>
+          <div class="fp-info">
+            <div class="fp-step-title">定位关键时段 · 复制文字记录</div>
+            <div class="fp-step-desc">找到业务指导的核心段落，一键复制原文</div>
+          </div>
+        </div>
+        <div class="fp-arrow">↓</div>
+        <div class="fp-step">
+          <div class="fp-dot" style="background:rgba(192,80,42,.2)">🤖</div>
+          <div class="fp-info">
+            <div class="fp-step-title">粘贴到 Claude · 配合结构化Prompt</div>
+            <div class="fp-step-desc">输入课件需求，Claude自动识别框架逻辑</div>
+          </div>
+        </div>
+        <div class="fp-arrow">↓</div>
+        <div class="fp-step">
+          <div class="fp-dot" style="background:rgba(16,163,127,.2)">✨</div>
+          <div class="fp-info">
+            <div class="fp-step-title">生成专业 HTML 培训课件</div>
+            <div class="fp-step-desc">可直接分发、在线浏览、持续迭代修改</div>
+          </div>
+        </div>
+        <div class="fp-arrow">↓</div>
+        <div class="fp-step">
+          <div class="fp-dot" style="background:rgba(240,112,32,.2)">🔁</div>
+          <div class="fp-info">
+            <div class="fp-step-title">对话式迭代 · 实时修正</div>
+            <div class="fp-step-desc">发现错字/调整内容，直接告诉Claude修改</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── S1: 获取会议纪要 ── -->
+<section class="sec" id="s1">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:var(--feishu)">01</span>
+      <span class="sec-lbl">飞书端操作</span>
+    </div>
+    <h2 class="sec-title">获取<em>飞书会议文字记录</em></h2>
+    <p class="sec-lead">大区总在飞书发起/加入会议，飞书AI会自动实时转写发言内容。会议结束后，进入会议纪要页面，找到「文字记录」标签，定位到业务指导的具体段落。</p>
+  </div>
+
+  <div class="step-block fade-up">
+    <div class="step-num-col">
+      <div class="step-num" style="background:var(--feishu)">1</div>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step-body">
+      <div class="step-title">
+        开启飞书会议「妙记」功能
+        <span class="step-source-tag" style="background:var(--feishu)">飞书</span>
+      </div>
+      <p class="step-lead">会议开始前，确认飞书妙记（AI会议助手）已开启录音转写。会议过程中无需手动记录，飞书自动实时生成带时间戳的文字记录。</p>
+      <div class="screenshot-sim">
+        <div class="ss-bar">
+          <div class="ss-dot" style="background:#ff5f57"></div>
+          <div class="ss-dot" style="background:#ffbd2e"></div>
+          <div class="ss-dot" style="background:#28c840"></div>
+          <div class="ss-url">cz4de1b192.feishu.cn/minutes/obcnw8a543198m3v5w4vk7l6</div>
+        </div>
+        <div class="ss-body">
+          <div class="feishu-sim">
+            <div class="fs-topbar">
+              <span class="fs-logo">飞书妙记</span>
+              <span class="fs-title">大区月度会议 · 2026年4月9日</span>
+            </div>
+            <div class="fs-content">
+              <div class="fs-meeting-info">
+                <span class="fs-meeting-icon">🎙️</span>
+                <div>
+                  <div class="fs-meeting-name">大区月度会议</div>
+                  <div class="fs-meeting-sub">时长：10小时13分13秒 · 发言人：40人</div>
+                </div>
+              </div>
+              <div class="fs-tabs">
+                <div class="fs-tab">智能纪要</div>
+                <div class="fs-tab active">文字记录 ← 点这里</div>
+              </div>
+              <div class="fs-transcript">
+                <div class="fs-line">
+                  <span class="fs-time">09:55:50</span>
+                  <span class="fs-speaker">王总</span>
+                  <span class="fs-text"><span class="fs-highlight">针对餐饮的招商，你要做一个完整的系统的方案，不是说我就告诉你，一上来我就告诉领导我这个铺子要招什么……</span></span>
+                </div>
+                <div class="fs-line">
+                  <span class="fs-time">09:56:40</span>
+                  <span class="fs-speaker">王总</span>
+                  <span class="fs-text">第一步就是你的外部调研。调什么内容？三个方向：上级、周边、本地……</span>
+                </div>
+                <div class="fs-line">
+                  <span class="fs-time">09:58:20</span>
+                  <span class="fs-speaker">王总</span>
+                  <span class="fs-text">第二个内部复盘。我的餐饮总共包含哪些品类？我的品牌是什么？</span>
+                </div>
+              </div>
+              <div class="fs-copy-btn">📋 复制全部文字记录</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box tip-blue" style="margin-top:14px">
+        <span class="tip-icon">💡</span>
+        <div class="tip-body">
+          <div class="tip-title">实战技巧：精准定位时间戳</div>
+          本次餐饮招商指导内容从 <strong>9小时55分50秒</strong> 开始。在文字记录页面，直接点击时间戳可跳转视频定位，确认段落边界后，选中对应文字复制即可。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block fade-up">
+    <div class="step-num-col">
+      <div class="step-num" style="background:var(--feishu)">2</div>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step-body">
+      <div class="step-title">
+        选定范围 · 复制原文
+        <span class="step-source-tag" style="background:var(--feishu)">飞书</span>
+      </div>
+      <p class="step-lead">圈定业务指导的起止时间段（本例：9:55:50 至会议结束），选中该段全部文字记录，复制到剪贴板。无需任何整理，保留原始口语化内容即可。</p>
+      <div class="op-card">
+        <div class="op-head">
+          <div class="op-head-left"><span class="op-icon">⌨️</span><span class="op-name">操作要点</span></div>
+          <span class="op-time">约 2 分钟</span>
+        </div>
+        <div class="op-body">
+          <div class="op-desc">① 点击「文字记录」Tab → ② 找到目标时间戳 → ③ 点击时间戳播放视频确认内容 → ④ 从起始位置选中文字到末尾 → ⑤ Ctrl+C 复制</div>
+          <div class="tip-box tip-orange">
+            <span class="tip-icon">⚡</span>
+            <div>
+              <div class="tip-title">不需要提前整理！</div>
+              飞书的原始文字记录包含口语化表达、重复词、语气词——这些完全没关系，Claude可以识别原始转写内容中的核心逻辑，不需要你先人工清洗。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── S2: 提炼关键内容 ── -->
+<section class="sec" id="s2">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:#6366f1">02</span>
+      <span class="sec-lbl">内容理解</span>
+    </div>
+    <h2 class="sec-title">理解<em>内容框架</em>，明确课件目标</h2>
+    <p class="sec-lead">在把内容交给Claude之前，你需要在脑子里过一遍：这段内容的核心框架是什么？面向谁？要达到什么培训目的？这决定了你给Claude的指令质量。</p>
+  </div>
+
+  <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px">
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase">本次案例：原始会议内容</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--feishu);font-weight:700;flex-shrink:0">来源</span>
+          <span style="color:var(--ink-soft)">大区月度会议 · 9:55:50 后的餐饮招商指导段落</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--feishu);font-weight:700;flex-shrink:0">时长</span>
+          <span style="color:var(--ink-soft)">约 15 分钟口语内容</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--feishu);font-weight:700;flex-shrink:0">内容</span>
+          <span style="color:var(--ink-soft)">外部调研→内部复盘→招商策略→招商计划→保障措施，五大模块</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--feishu);font-weight:700;flex-shrink:0">格式</span>
+          <span style="color:var(--ink-soft)">飞书转写的口语化原文，含语气词、重复表达</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase">策划培训课件目标</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--claude);font-weight:700;flex-shrink:0">受众</span>
+          <span style="color:var(--ink-soft)">门店店总、总助、招商人员</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--claude);font-weight:700;flex-shrink:0">目的</span>
+          <span style="color:var(--ink-soft)">让未参会人员理解方法论，指导实际招商工作</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--claude);font-weight:700;flex-shrink:0">格式</span>
+          <span style="color:var(--ink-soft)">HTML课件，可在线浏览、方便分发</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;align-items:flex-start">
+          <span style="color:var(--claude);font-weight:700;flex-shrink:0">风格</span>
+          <span style="color:var(--ink-soft)">专业、视觉化、层次清晰，有图表和结构化内容</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box tip-green fade-up">
+    <span class="tip-icon">🎯</span>
+    <div>
+      <div class="tip-title">关键认知：你的判断 + Claude的执行 = 最佳结果</div>
+      Claude负责将内容结构化并美化呈现，但<strong>你对业务的理解是不可替代的</strong>。
+      你知道"这是五大模块"、"受众是招商人员"、"要突出操作性"——把这些告诉Claude，它就能生成真正有价值的课件，而不是泛泛的总结文档。
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── S3: 构建Prompt ── -->
+<section class="sec" id="s3">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:var(--claude)">03</span>
+      <span class="sec-lbl">Claude 端操作</span>
+    </div>
+    <h2 class="sec-title">构建<em class="ec">高质量 Prompt</em></h2>
+    <p class="sec-lead">一个好的Prompt = 角色设定 + 内容来源 + 目标受众 + 输出格式 + 特殊要求。这是决定课件质量的最关键一步。</p>
+  </div>
+
+  <div class="fade-up">
+    <div class="op-card" style="margin-bottom:20px">
+      <div class="op-head">
+        <div class="op-head-left"><span class="op-icon">✍️</span><span class="op-name">Prompt 模板（可直接复用）</span></div>
+        <span class="op-time">推荐格式</span>
+      </div>
+      <div class="op-body">
+        <div class="cmd-block">
+          <div class="cmd-label">粘贴到 Claude 的完整 Prompt</div>
+          <button class="cmd-copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText.replace(/\n/g,'\n'))">复制</button>
+          <div class="cmd-text"><span class="c">// ① 说明内容来源</span>
+以下是飞书会议的文字记录片段，来源于我们大区月度会议中，
+大区总经理在 <span class="k">9小时55分50秒</span> 之后针对餐饮招商的专项指导内容。
+
+<span class="c">// ② 粘贴原始文字记录（直接贴，不用整理）</span>
+<span class="v">[在此处粘贴从飞书复制的文字记录原文]</span>
+
+<span class="c">// ③ 明确任务</span>
+请基于以上内容，生成一个面向 <span class="k">店总/总助/招商人员</span> 的培训课件。
+
+<span class="c">// ④ 指定格式</span>
+格式要求：HTML 网页格式，要有：
+- 精美的视觉设计（导航栏、分章节布局、卡片式内容）
+- 结构化的内容呈现（分模块、有重点标注）
+- 可以在浏览器中直接打开浏览
+
+<span class="c">// ⑤ 内容要求</span>
+内容要求：
+- 它里面的内容主要涵盖五大板块：外部调研、内部复盘、招商策略、招商计划、保障措施
+- 提炼核心方法论，去掉口语化重复表达
+- 保留讲话中的关键案例（如：海底捞案例、衢州NEED案例）
+- 语气专业但易懂，适合一线招商人员理解执行</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:12px">✅ Prompt 五要素</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;font-size:13px">
+            <span style="background:var(--feishu);color:white;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;height:fit-content;margin-top:2px">来源</span>
+            <span style="color:var(--ink-soft)">说明内容来自飞书会议哪个时间段，给Claude提供上下文</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:13px">
+            <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;height:fit-content;margin-top:2px">受众</span>
+            <span style="color:var(--ink-soft)">明确面向谁——店总/总助/招商人员，决定内容深度和语气</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:13px">
+            <span style="background:var(--orange);color:white;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;height:fit-content;margin-top:2px">格式</span>
+            <span style="color:var(--ink-soft)">指定HTML/PPT/Word，以及视觉风格要求</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:13px">
+            <span style="background:var(--claude);color:white;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;height:fit-content;margin-top:2px">结构</span>
+            <span style="color:var(--ink-soft)">告诉Claude内容包含哪几个模块，避免遗漏重要章节</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:13px">
+            <span style="background:var(--green);color:white;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;height:fit-content;margin-top:2px">特需</span>
+            <span style="color:var(--ink-soft)">保留哪些案例、用什么语气、有哪些关键词不能改</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:#ef4444;margin-bottom:12px">❌ 常见错误Prompt</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff5f5;border-radius:6px;padding:12px 14px;border-left:3px solid #ef4444">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:4px">❌ 错误示例1</div>
+            <div style="font-size:12px;color:var(--gray)">"帮我把这段文字整理成PPT"</div>
+            <div style="font-size:11px;color:#ef4444;margin-top:4px">→ 缺少受众、格式、结构信息，结果会很平淡</div>
+          </div>
+          <div style="background:#fff5f5;border-radius:6px;padding:12px 14px;border-left:3px solid #ef4444">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:4px">❌ 错误示例2</div>
+            <div style="font-size:12px;color:var(--gray)">"先整理一下，再出课件"（两步走）</div>
+            <div style="font-size:11px;color:#ef4444;margin-top:4px">→ 多此一举，Claude可以直接处理原始转写文字</div>
+          </div>
+          <div style="background:#fff5f5;border-radius:6px;padding:12px 14px;border-left:3px solid #ef4444">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:4px">❌ 错误示例3</div>
+            <div style="font-size:12px;color:var(--gray)">"生成一个好看的课件"</div>
+            <div style="font-size:11px;color:#ef4444;margin-top:4px">→ "好看"没有标准，必须说清楚风格和结构</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── S4: 生成课件 ── -->
+<section class="sec" id="s4">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:var(--claude)">04</span>
+      <span class="sec-lbl">Claude 生成</span>
+    </div>
+    <h2 class="sec-title"><em class="ec">Claude</em> 生成培训课件</h2>
+    <p class="sec-lead">将Prompt + 飞书原文一起粘贴进Claude对话框，发送后等待约30秒，Claude会自动输出完整的HTML培训课件代码。</p>
+  </div>
+
+  <div class="step-block fade-up">
+    <div class="step-num-col">
+      <div class="step-num" style="background:var(--claude)">1</div>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step-body">
+      <div class="step-title">打开 Claude，粘贴 Prompt + 原文<span class="step-source-tag" style="background:var(--claude)">Claude</span></div>
+      <p class="step-lead">在 claude.ai 新建对话，将上一步准备好的Prompt（含飞书原文）粘贴进输入框，点击发送。Claude会自动分析原文框架并生成课件。</p>
+      <div class="screenshot-sim">
+        <div class="ss-bar">
+          <div class="ss-dot" style="background:#ff5f57"></div>
+          <div class="ss-dot" style="background:#ffbd2e"></div>
+          <div class="ss-dot" style="background:#28c840"></div>
+          <div class="ss-url">claude.ai/chat</div>
+        </div>
+        <div class="ss-body">
+          <div class="claude-sim">
+            <div class="cl-topbar"><span class="cl-logo">Claude</span></div>
+            <div class="cl-prompt-area">
+              <div class="cl-prompt-box">
+                <div class="cl-prompt-label">你的输入</div>
+                以下是飞书会议的文字记录片段，来源于大区月度会议中大区总经理在9小时55分50秒之后针对餐饮招商的专项指导内容。<br><br>
+                [原始飞书文字记录：区域的话就是明天抽时间拉个会啊……针对餐饮的招商，你要做一个完整的系统的方案……第一步就是你的外部调研……]<br><br>
+                请基于以上内容，生成一个面向店总/总助/招商人员的培训课件，格式为HTML…
+              </div>
+              <div class="cl-response">
+                <div class="cl-response-label">Claude 输出</div>
+                <div class="cl-output">
+                  ✅ 已识别到 <strong>5大核心模块</strong>：外部调研 · 内部复盘 · 招商策略 · 招商计划 · 保障措施<br><br>
+                  正在生成 HTML 培训课件，包含：导航栏 · 英雄区 · 5个内容章节 · 案例高亮 · 响应式布局…<br><br>
+                  <code style="background:rgba(192,80,42,.08);padding:2px 6px;border-radius:3px;font-size:11px">&lt;!DOCTYPE html&gt; &lt;html lang="zh-CN"&gt;…</code>（完整代码约1400行）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block fade-up">
+    <div class="step-num-col">
+      <div class="step-num" style="background:var(--claude)">2</div>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step-body">
+      <div class="step-title">下载 HTML 文件，浏览器打开<span class="step-source-tag" style="background:var(--green)">输出</span></div>
+      <p class="step-lead">Claude输出完整HTML代码后，点击右上角「下载」按钮保存为 .html 文件。双击用浏览器打开，即可看到完整的培训课件效果。</p>
+      <div class="result-grid">
+        <div class="r-card">
+          <span class="r-icon">🎨</span>
+          <div class="r-name">专业视觉设计</div>
+          <div class="r-desc">自带导航栏、进度条、卡片布局、滚动动画，无需额外设计</div>
+        </div>
+        <div class="r-card">
+          <span class="r-icon">📱</span>
+          <div class="r-name">手机端可用</div>
+          <div class="r-desc">响应式布局，在手机上也能正常浏览，方便分发给门店人员</div>
+        </div>
+        <div class="r-card">
+          <span class="r-icon">🔗</span>
+          <div class="r-name">随时分发</div>
+          <div class="r-desc">上传GitHub Pages等平台后生成链接，发到群里即可访问</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block fade-up">
+    <div class="step-num-col">
+      <div class="step-num" style="background:var(--claude)">3</div>
+    </div>
+    <div class="step-body">
+      <div class="step-title">效果预览：本次生成的餐饮招商课件<span class="step-source-tag" style="background:var(--green)">实际案例</span></div>
+      <p class="step-lead">以下是本次大区会议餐饮招商指导内容生成的实际课件结构，完整保留了五大模块的核心方法论。</p>
+      <div class="card" style="border:2px solid var(--blue-pale)">
+        <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:16px;text-transform:uppercase">课件结构一览</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+          <div style="text-align:center;padding:16px 10px;background:rgba(192,80,42,.06);border-radius:6px;border:1px solid rgba(192,80,42,.15)">
+            <div style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:900;color:var(--claude);margin-bottom:6px">01</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">外部调研</div>
+            <div style="font-size:11px;color:var(--gray)">上级·周边·本地<br>TOP10/15品牌数据</div>
+          </div>
+          <div style="text-align:center;padding:16px 10px;background:rgba(43,95,222,.06);border-radius:6px;border:1px solid rgba(43,95,222,.15)">
+            <div style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:900;color:var(--feishu);margin-bottom:6px">02</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">内部复盘</div>
+            <div style="font-size:11px;color:var(--gray)">品类完整性<br>良性评估·1:3目标</div>
+          </div>
+          <div style="text-align:center;padding:16px 10px;background:rgba(240,112,32,.06);border-radius:6px;border:1px solid rgba(240,112,32,.15)">
+            <div style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:900;color:var(--orange);margin-bottom:6px">03</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">招商策略</div>
+            <div style="font-size:11px;color:var(--gray)">核心品牌撬动<br>NEED·海底捞案例</div>
+          </div>
+          <div style="text-align:center;padding:16px 10px;background:rgba(16,163,127,.06);border-radius:6px;border:1px solid rgba(16,163,127,.15)">
+            <div style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:900;color:var(--green);margin-bottom:6px">04</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">招商计划</div>
+            <div style="font-size:11px;color:var(--gray)">六节点追踪表<br>责任到人到周</div>
+          </div>
+          <div style="text-align:center;padding:16px 10px;background:rgba(99,102,241,.06);border-radius:6px;border:1px solid rgba(99,102,241,.15)">
+            <div style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:900;color:#6366f1;margin-bottom:6px">05</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">保障措施</div>
+            <div style="font-size:11px;color:var(--gray)">月度会·日会<br>激励·节点考核</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── S5: 迭代优化 ── -->
+<section class="sec" id="s5">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:var(--orange)">05</span>
+      <span class="sec-lbl">对话式修改</span>
+    </div>
+    <h2 class="sec-title">对话式<em>迭代优化</em></h2>
+    <p class="sec-lead">课件生成后，你可以像聊天一样告诉Claude需要修改的地方。不需要重新开始，直接在同一个对话里说"把XXX改成YYY"即可。</p>
+  </div>
+
+  <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase">🔧 本次迭代过程（真实案例）</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="op-card">
+          <div class="op-head" style="background:rgba(255,193,7,.06)">
+            <div class="op-head-left"><span class="op-icon">📸</span><span class="op-name">修改1：纠正品牌名称</span></div>
+            <span class="op-time">30秒</span>
+          </div>
+          <div class="op-body">
+            <div class="op-desc">截图发给Claude：<em>「烤鱼 半天要」→ 把"半天要"改为"半天妖"</em></div>
+            <div style="background:rgba(192,80,42,.05);border-radius:4px;padding:8px 12px;font-size:12px;color:var(--ink-soft)">Claude：已将第02节内部复盘表中"半天要"更正为"半天妖"</div>
+          </div>
+        </div>
+        <div class="op-card">
+          <div class="op-head" style="background:rgba(255,193,7,.06)">
+            <div class="op-head-left"><span class="op-icon">✏️</span><span class="op-name">修改2：纠正别字</span></div>
+            <span class="op-time">20秒</span>
+          </div>
+          <div class="op-body">
+            <div class="op-desc"><em>「偏离了就是补破，不是招商」→ "补破"改为"补铺"</em></div>
+            <div style="background:rgba(192,80,42,.05);border-radius:4px;padding:8px 12px;font-size:12px;color:var(--ink-soft)">Claude：已将"补破"修正为"补铺"</div>
+          </div>
+        </div>
+        <div class="op-card">
+          <div class="op-head" style="background:rgba(255,193,7,.06)">
+            <div class="op-head-left"><span class="op-icon">🏷️</span><span class="op-name">修改3：替换品牌名</span></div>
+            <span class="op-time">20秒</span>
+          </div>
+          <div class="op-body">
+            <div class="op-desc"><em>全局替换"咪的"→"NEED"（品牌正式名称）</em></div>
+            <div style="background:rgba(192,80,42,.05);border-radius:4px;padding:8px 12px;font-size:12px;color:var(--ink-soft)">Claude：已替换全文2处"咪的"为"NEED"</div>
+          </div>
+        </div>
+        <div class="op-card">
+          <div class="op-head" style="background:rgba(255,193,7,.06)">
+            <div class="op-head-left"><span class="op-icon">🔡</span><span class="op-name">修改4：全局调整字号</span></div>
+            <span class="op-time">30秒</span>
+          </div>
+          <div class="op-body">
+            <div class="op-desc"><em>"正文字号有点小，把所有正文字体的字号都+3px"</em></div>
+            <div style="background:rgba(192,80,42,.05);border-radius:4px;padding:8px 12px;font-size:12px;color:var(--ink-soft)">Claude：已将CSS中10px~16px的正文字号全部上调3px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase">💬 可以这样告诉 Claude</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="cmd-block">
+          <div class="cmd-label">内容修改类</div>
+          <div class="cmd-text"><span class="v">"第X节的XXX内容有误，改为YYY"</span>
+<span class="v">"把[品牌名]全部替换为[正确名称]"</span>
+<span class="v">"第03节缺少ZZZ内容，请补充"</span></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">样式调整类</div>
+          <div class="cmd-text"><span class="v">"正文字号太小，全部+3px"</span>
+<span class="v">"取消第X节的空白占位块"</span>
+<span class="v">"导航栏颜色改深一些"</span></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">结构调整类</div>
+          <div class="cmd-text"><span class="v">"在第02节后面增加一个小结模块"</span>
+<span class="v">"把第04节的表格改成卡片式布局"</span>
+<span class="v">"最后加一个学习检测问答题"</span></div>
+        </div>
+        <div class="tip-box tip-blue" style="margin-top:4px">
+          <span class="tip-icon">📸</span>
+          <div>
+            <strong>截图反馈更高效</strong><br>
+            发现问题时，直接截图标注（如图片中用红框圈出），同时用文字说明要改什么，Claude能更精准定位问题位置。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── S6: 最佳实践 ── -->
+<section class="sec" id="s6">
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-eye">
+      <span class="sec-num" style="background:var(--green)">06</span>
+      <span class="sec-lbl">经验总结</span>
+    </div>
+    <h2 class="sec-title">最佳实践 <em>& 注意事项</em></h2>
+    <p class="sec-lead">基于本次餐饮招商课件生成的实际经验，总结出以下使用心得，帮助你在下次使用时少走弯路。</p>
+  </div>
+
+  <!-- 效率对比 -->
+  <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--gray-light);border-radius:8px;overflow:hidden;margin-bottom:32px">
+    <div style="background:var(--card);padding:32px 28px">
+      <div style="font-size:12px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:20px;text-transform:uppercase">🕰️ 传统方式</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">整理会议笔记</span>
+          <span style="font-size:13px;font-weight:700;color:#ef4444">2—3 小时</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">制作PPT/文档</span>
+          <span style="font-size:13px;font-weight:700;color:#ef4444">3—5 小时</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">设计美化</span>
+          <span style="font-size:13px;font-weight:700;color:#ef4444">1—2 小时</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff0f0;border-radius:5px;border:1px solid rgba(239,68,68,.2)">
+          <span style="font-size:14px;font-weight:700;color:var(--ink)">合计</span>
+          <span style="font-size:16px;font-weight:900;color:#ef4444;font-family:'Noto Serif SC',serif">6—10 小时</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--card);padding:32px 28px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);letter-spacing:2px;margin-bottom:20px;text-transform:uppercase">⚡ 飞书 + Claude</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">飞书复制文字记录</span>
+          <span style="font-size:13px;font-weight:700;color:var(--green)">2 分钟</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">编写Prompt发送</span>
+          <span style="font-size:13px;font-weight:700;color:var(--green)">3 分钟</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:5px">
+          <span style="font-size:13px;color:var(--ink-soft)">Claude生成 + 迭代修改</span>
+          <span style="font-size:13px;font-weight:700;color:var(--green)">5 分钟</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#f0fdf9;border-radius:5px;border:1px solid rgba(16,163,127,.3)">
+          <span style="font-size:14px;font-weight:700;color:var(--ink)">合计</span>
+          <span style="font-size:16px;font-weight:900;color:var(--green);font-family:'Noto Serif SC',serif">10 分钟</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="best-grid fade-up">
+    <div class="b-card">
+      <div class="b-title">✅ 让结果更好的做法</div>
+      <ul class="b-list">
+        <li>会议前确认飞书妙记已开启，全程录音转写</li>
+        <li>指导完成后立刻处理，趁记忆鲜活校对内容</li>
+        <li>Prompt中明确说出内容包含的模块数量</li>
+        <li>把关键案例名称（NEED、海底捞）在Prompt里提一次</li>
+        <li>遇到错字/专有名词，截图+文字说明同时发给Claude</li>
+        <li>生成后快速通读，把模糊表达反馈给Claude完善</li>
+      </ul>
+    </div>
+    <div class="b-card">
+      <div class="b-title" style="color:#ef4444">❌ 避免的做法</div>
+      <ul class="b-list">
+        <li class="bad">等到几天后才整理，遗忘关键语境</li>
+        <li class="bad">先人工整理再给Claude，浪费时间</li>
+        <li class="bad">Prompt只说"帮我做个课件"不给细节</li>
+        <li class="bad">遇到错误就重新开对话，应在同一对话迭代</li>
+        <li class="bad">忽略口语化内容中的关键案例细节</li>
+        <li class="bad">生成后直接分发，不做基本内容校对</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 可延伸场景 -->
+  <div class="fade-up" style="margin-top:28px">
+    <div style="font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:16px;text-transform:uppercase">🚀 可延伸的其他应用场景</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div style="background:var(--card);border-radius:8px;padding:18px 16px;box-shadow:var(--shadow);border:1px solid rgba(20,86,245,.06);text-align:center">
+        <div style="font-size:24px;margin-bottom:10px">📊</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">月度业务复盘</div>
+        <div style="font-size:11px;color:var(--gray)">月度经营会议→自动生成业绩分析报告</div>
+      </div>
+      <div style="background:var(--card);border-radius:8px;padding:18px 16px;box-shadow:var(--shadow);border:1px solid rgba(20,86,245,.06);text-align:center">
+        <div style="font-size:24px;margin-bottom:10px">🎯</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">营销活动方案</div>
+        <div style="font-size:11px;color:var(--gray)">白板策划会议→完整活动策划课件</div>
+      </div>
+      <div style="background:var(--card);border-radius:8px;padding:18px 16px;box-shadow:var(--shadow);border:1px solid rgba(20,86,245,.06);text-align:center">
+        <div style="font-size:24px;margin-bottom:10px">🏪</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">新员工培训</div>
+        <div style="font-size:11px;color:var(--gray)">老员工带教录音→标准化入职手册</div>
+      </div>
+      <div style="background:var(--card);border-radius:8px;padding:18px 16px;box-shadow:var(--shadow);border:1px solid rgba(20,86,245,.06);text-align:center">
+        <div style="font-size:24px;margin-bottom:10px">📋</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">SOP文档输出</div>
+        <div style="font-size:11px;color:var(--gray)">操作流程讲解录音→标准作业程序</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="cl-inner">
+    <div class="cl-label">核心价值主张</div>
+    <h2 class="cl-title">知识不再<em>停留在会议室</em></h2>
+    <p class="cl-body">
+      大区总的每一次业务指导都是宝贵的方法论沉淀。<br>
+      飞书记录声音，Claude转化为知识，让智慧流向每一个门店、每一个需要它的人。
+    </p>
+    <div class="value-pills">
+      <div class="vp"><span class="vp-icon">⏱️</span><div><div class="vp-num">10分钟</div><div class="vp-text">完成全流程</div></div></div>
+      <div class="vp"><span class="vp-icon">📉</span><div><div class="vp-num">96%</div><div class="vp-text">时间节省</div></div></div>
+      <div class="vp"><span class="vp-icon">📤</span><div><div class="vp-num">∞</div><div class="vp-text">可复用可迭代</div></div></div>
+      <div class="vp"><span class="vp-icon">🧑‍💻</span><div><div class="vp-num">零代码</div><div class="vp-text">人人可操作</div></div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  prog.style.width = (window.scrollY / (document.body.scrollHeight - innerHeight) * 100) + '%';
+});
+const secs = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.nav-steps a');
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(a => a.classList.remove('active'));
+      const a = document.querySelector(`.nav-steps a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 }).observe(document.querySelector('#hero'));
+secs.forEach(s => new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(a => a.classList.remove('active'));
+      const a = document.querySelector(`.nav-steps a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 }).observe(s));
+document.querySelectorAll('.fade-up').forEach(el => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }).observe(el);
+});
+</script>
+</body>
+</html>
